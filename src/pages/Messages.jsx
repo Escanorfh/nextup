@@ -341,7 +341,7 @@ export default function MessagesPage() {
     return (
         <div className="flex h-[calc(100vh-64px)] bg-gray-50">
             {/* --- Left Sidebar (Contact List) --- */}
-            <div className="w-full md:w-80 bg-white border-r border-gray-200 flex flex-col">
+            <div className="w-full md:w-80 lg:w-96 bg-white border-r border-gray-200 flex flex-col">
                 <div className="p-4 border-b border-gray-100 bg-gray-50">
                     <h2 className="text-xl font-bold text-gray-800">Messages</h2>
                 </div>
