@@ -1,7 +1,9 @@
 // src/pages/HomePage.jsx
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Home() {
+  const { user } = useAuth();
   return (
     <div className="min-h-screen bg-neutral-50">
 
@@ -16,12 +18,14 @@ export default function Home() {
             Next Up is Egypt’s trusted local marketplace for buying and selling secondhand items — from electronics and furniture to bikes and fashion — quickly, securely, and completely free.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-            <Link
-              to="/signup"
-              className="px-8 py-4 bg-neutral-900 text-white font-medium rounded-lg shadow-sm hover:bg-neutral-800 transition duration-200"
-            >
-              Join Free — Start Trading Today
-            </Link>
+            {!user && (
+              <Link
+                to="/signup"
+                className="px-8 py-4 bg-neutral-900 text-white font-medium rounded-lg shadow-sm hover:bg-neutral-800 transition duration-200"
+              >
+                Join Free — Start Trading Today
+              </Link>
+            )}
             <Link
               to="/products"
               className="px-8 py-4 bg-white text-neutral-900 font-medium border border-neutral-200 rounded-lg hover:bg-neutral-50 transition duration-200"
@@ -142,24 +146,26 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-neutral-900">
-        <div className="container mx-auto px-4 text-center text-white">
-          <h2 className="text-3xl md:text-4xl font-bold max-w-2xl mx-auto tracking-tight">
-            Ready to Declutter or Discover Deals in Egypt?
-          </h2>
-          <p className="mt-6 text-neutral-400 max-w-xl mx-auto text-lg">
-            Join thousands of Egyptians using Next Up — the free, local, and trusted way to trade secondhand items nationwide.
-          </p>
-          <div className="mt-10">
-            <Link
-              to="../auth/signUp"
-              className="px-8 py-4 bg-white text-neutral-900 font-bold rounded-lg shadow-lg hover:bg-neutral-100 transition duration-200"
-            >
-              Create Your Free Account Now
-            </Link>
+      {!user && (
+        <section className="py-20 bg-neutral-900">
+          <div className="container mx-auto px-4 text-center text-white">
+            <h2 className="text-3xl md:text-4xl font-bold max-w-2xl mx-auto tracking-tight">
+              Ready to Declutter or Discover Deals in Egypt?
+            </h2>
+            <p className="mt-6 text-neutral-400 max-w-xl mx-auto text-lg">
+              Join thousands of Egyptians using Next Up — the free, local, and trusted way to trade secondhand items nationwide.
+            </p>
+            <div className="mt-10">
+              <Link
+                to="../auth/signUp"
+                className="px-8 py-4 bg-white text-neutral-900 font-bold rounded-lg shadow-lg hover:bg-neutral-100 transition duration-200"
+              >
+                Create Your Free Account Now
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Footer Placeholder */}
       <footer className="py-8 bg-white border-t border-neutral-200">

@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { supabase } from '../lib/supabase';
 import logo from '../assets/logo.png';
 
 const CATEGORIES = ['All', 'Electronics', 'Clothing', 'Furniture', 'Vehicles', 'Sports', 'Books'];
@@ -25,12 +26,20 @@ export default function Header({
     const [maxPrice, setMaxPrice] = useState('');
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const profileMenuRef = useRef(null);
+    const [isNotifOpen, setIsNotifOpen] = useState(false);
+    const notifMenuRef = useRef(null);
+    const [notifSheetOpen, setNotifSheetOpen] = useState(false);
+    const [notifItems, setNotifItems] = useState([]);
+    const [notifLoading, setNotifLoading] = useState(false);
 
     // Close profile menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
                 setIsProfileMenuOpen(false);
+            }
+            if (notifMenuRef.current && !notifMenuRef.current.contains(e.target)) {
+                setIsNotifOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -67,6 +76,82 @@ export default function Header({
             .substring(0, 2);
     };
 
+    useEffect(() => {
+        if (!user) return;
+        const load = async () => {
+            setNotifLoading(true);
+            try {
+                const { data, error } = await supabase
+                    .from('messages')
+                    .select(`
+                        id,
+                        conversation_id,
+                        sender_id,
+                        receiver_id,
+                        content,
+                        created_at,
+                        product_id,
+                        sender:sender_id (id, full_name),
+                        product:product_id (name)
+                    `)
+                    .eq('receiver_id', user.id)
+                    .order('created_at', { ascending: false })
+                    .limit(20);
+                if (error) throw error;
+                const formatted = (data || []).map(m => ({
+                    id: m.id,
+                    conversationId: m.conversation_id,
+                    senderId: m.sender_id,
+                    senderName: m.sender?.full_name || 'User',
+                    senderInitials: (m.sender?.full_name || 'User').substring(0, 2).toUpperCase(),
+                    content: m.content,
+                    time: new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    productName: m.product?.name || null,
+                    productId: m.product_id || null,
+                }));
+                setNotifItems(formatted);
+            } catch (err) {
+                console.error('Load notifications error:', err);
+            } finally {
+                setNotifLoading(false);
+            }
+        };
+        load();
+    }, [user]);
+
+    useEffect(() => {
+        if (!user) return;
+        const channel = supabase
+            .channel('public:messages:header')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (payload) => {
+                const m = payload.new;
+                if (m.receiver_id !== user.id) return;
+                let senderName = 'User';
+                const { data: prof } = await supabase
+                    .from('profiles')
+                    .select('full_name')
+                    .eq('id', m.sender_id)
+                    .maybeSingle();
+                if (prof?.full_name) senderName = prof.full_name;
+                const initials = senderName.substring(0, 2).toUpperCase();
+                setNotifItems(prev => [{
+                    id: m.id,
+                    conversationId: m.conversation_id,
+                    senderId: m.sender_id,
+                    senderName,
+                    senderInitials: initials,
+                    content: m.content,
+                    time: new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    productName: null,
+                    productId: m.product_id || null,
+                }, ...prev]);
+            })
+            .subscribe();
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [user]);
+
     return (
         <>
             {/* Main Navbar */}
@@ -102,18 +187,61 @@ export default function Header({
                     {/* Right Actions */}
                     <div className="flex items-center gap-3">
                         {user ? (
-                            <div className="flex items-center gap-2">
+                            <div className="hidden md:flex items-center gap-2">
                                 {/* Notifications */}
-                                <button
-                                    onClick={() => navigate('/notifications')}
-                                    className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition relative"
-                                    title="Notifications"
-                                >
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM10.71 5.59A5.48 5.48 0 005 11v1l-1 4v2h2l1 4h2l1-4h4l1 4h2l1-4h2v-2l-1-4V11a5.48 5.48 0 00-5.71-5.41z" />
-                                        <circle cx="16.5" cy="4.5" r="1.5" fill="currentColor" />
-                                    </svg>
-                                </button>
+                                <div className="relative" ref={notifMenuRef}>
+                                    <button
+                                        onClick={() => setIsNotifOpen(!isNotifOpen)}
+                                        className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition relative"
+                                        title="Notifications"
+                                    >
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM10.71 5.59A5.48 5.48 0 005 11v1l-1 4v2h2l1 4h2l1-4h4l1 4h2l1-4h2v-2l-1-4V11a5.48 5.48 0 00-5.71-5.41z" />
+                                            <circle cx="16.5" cy="4.5" r="1.5" fill="currentColor" />
+                                        </svg>
+                                    </button>
+                                    {isNotifOpen && (
+                                        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200">
+                                            <div className="px-4 pb-2 font-semibold text-neutral-900">Notifications</div>
+                                            {notifLoading ? (
+                                                <div className="px-4 py-6 text-sm text-gray-500">Loading...</div>
+                                            ) : notifItems.length === 0 ? (
+                                                <div className="px-4 py-6 text-sm text-gray-500">No notifications</div>
+                                            ) : (
+                                                notifItems.map(item => (
+                                                    <div key={item.id} className="px-4 py-2 hover:bg-gray-50">
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-700 text-xs font-bold">
+                                                                {item.senderInitials}
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="flex justify-between items-baseline">
+                                                                    <div className="text-sm font-medium text-neutral-900 truncate">{item.senderName}</div>
+                                                                    <div className="text-[11px] text-gray-400">{item.time}</div>
+                                                                </div>
+                                                                {item.productName && (
+                                                                    <div className="text-xs text-blue-600 truncate">re: {item.productName}</div>
+                                                                )}
+                                                                <div className="text-sm text-gray-700 truncate">{item.content}</div>
+                                                                <div className="mt-2">
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setIsNotifOpen(false);
+                                                                            navigate(`/messages?to=${item.senderId}${item.productId ? `&listing=${item.productId}` : ''}`);
+                                                                        }}
+                                                                        className="text-xs px-2 py-1 bg-neutral-900 text-white rounded-full hover:bg-neutral-800 transition"
+                                                                    >
+                                                                        Open Chat
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                                 {/* Messages */}
                                 <button
                                     onClick={() => navigate('/messages')}
@@ -156,7 +284,7 @@ export default function Header({
                                 </div>
                             </div>
                         ) : (
-                            <>
+                            <div className="hidden md:flex items-center gap-2">
                                 <Link
                                     to="./auth/signin"
                                     className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition"
@@ -169,7 +297,7 @@ export default function Header({
                                 >
                                     Sign Up
                                 </Link>
-                            </>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -201,7 +329,7 @@ export default function Header({
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21l-7.682-7.318a4.5 4.5 0 010-6.364z" /></svg>
                                 <span className="text-xs mt-1">Favorites</span>
                             </Link>
-                            {user && (
+                            {user ? (
                                 <>
                                     <button
                                         onClick={() => { setIsMobileMenuOpen(false); navigate('/messages'); }}
@@ -211,7 +339,7 @@ export default function Header({
                                         <span className="text-xs mt-1">Messages</span>
                                     </button>
                                     <button
-                                        onClick={() => { setIsMobileMenuOpen(false); navigate('/notifications'); }}
+                                        onClick={() => { setIsMobileMenuOpen(false); setNotifSheetOpen(true); }}
                                         className="flex flex-col items-center justify-center p-3 rounded-lg text-gray-600 hover:bg-gray-100"
                                     >
                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM10.71 5.59A5.48 5.48 0 005 11v1l-1 4v2h2l1 4h2l1-4h4l1 4h2l1-4h2v-2l-1-4V11a5.48 5.48 0 00-5.71-5.41z" /></svg>
@@ -226,11 +354,81 @@ export default function Header({
                                         <span className="text-xs mt-1">Profile</span>
                                     </Link>
                                 </>
+                            ) : (
+                                <>
+                                    <Link
+                                        to="/auth/signin"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex flex-col items-center justify-center p-3 rounded-lg text-gray-600 hover:bg-gray-100"
+                                    >
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 8a9 9 0 10-18 0h18z" /></svg>
+                                        <span className="text-xs mt-1">Sign In</span>
+                                    </Link>
+                                    <Link
+                                        to="/auth/signup"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex flex-col items-center justify-center p-3 rounded-lg text-gray-600 hover:bg-gray-100"
+                                    >
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                                        <span className="text-xs mt-1">Sign Up</span>
+                                    </Link>
+                                </>
                             )}
                         </div>
                     </nav>
                 )}
             </header>
+            {notifSheetOpen && (
+                <div className="fixed inset-0 z-50 flex items-end md:hidden">
+                    <div className="absolute inset-0 bg-black/30" onClick={() => setNotifSheetOpen(false)} />
+                    <div className="relative w-full bg-white rounded-t-2xl shadow-xl border-t border-gray-200 max-h-[70vh]">
+                        <div className="p-4 flex items-center justify-between">
+                            <div className="text-lg font-semibold">Notifications</div>
+                            <button onClick={() => setNotifSheetOpen(false)} className="p-2 rounded-md hover:bg-gray-100">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <div className="overflow-y-auto max-h-[60vh] divide-y">
+                            {notifLoading ? (
+                                <div className="px-4 py-6 text-sm text-gray-500">Loading...</div>
+                            ) : notifItems.length === 0 ? (
+                                <div className="px-4 py-6 text-sm text-gray-500">No notifications</div>
+                            ) : (
+                                notifItems.map(item => (
+                                    <div key={item.id} className="px-4 py-3">
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-700 text-xs font-bold">
+                                                {item.senderInitials}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex justify-between items-baseline">
+                                                    <div className="text-sm font-medium text-neutral-900 truncate">{item.senderName}</div>
+                                                    <div className="text-[11px] text-gray-400">{item.time}</div>
+                                                </div>
+                                                {item.productName && (
+                                                    <div className="text-xs text-blue-600 truncate">re: {item.productName}</div>
+                                                )}
+                                                <div className="text-sm text-gray-700 truncate">{item.content}</div>
+                                                <div className="mt-2">
+                                                    <button
+                                                        onClick={() => {
+                                                            setNotifSheetOpen(false);
+                                                            navigate(`/messages?to=${item.senderId}${item.productId ? `&listing=${item.productId}` : ''}`);
+                                                        }}
+                                                        className="text-xs px-3 py-1.5 bg-neutral-900 text-white rounded-full hover:bg-neutral-800 transition"
+                                                    >
+                                                        Open Chat
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

@@ -16,6 +16,7 @@ import ProfilePage from './pages/profile';
 import MyListingsPage from './pages/MyProducts'; // Was MyListingsPage
 import MessagesPage from './pages/Messages';
 import FavoritesPage from './pages/Favorites';
+import NotFoundPage from './pages/NotFound';
 
 // Protected Route
 import ProtectedRoute from './components/ProtectedRoute';
@@ -54,7 +55,7 @@ function App() {
         </Route>
 
         {/* Fallback */}
-        <Route path="*" element={<HomePage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );
