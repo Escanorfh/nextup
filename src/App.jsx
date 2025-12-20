@@ -16,6 +16,7 @@ import ProfilePage from './pages/profile';
 import MyListingsPage from './pages/MyProducts'; // Was MyListingsPage
 import MessagesPage from './pages/Messages';
 import FavoritesPage from './pages/Favorites';
+import ContactsPage from './pages/Contacts';
 import NotFoundPage from './pages/NotFound';
 
 // Protected Route
@@ -51,6 +52,7 @@ function App() {
             <Route path="my-listings" element={<MyListingsPage />} />
             <Route path="my-products" element={<MyListingsPage />} />
             <Route path="messages" element={<MessagesPage />} />
+            <Route path="contacts" element={<ContactsPage />} />
           </Route>
         </Route>
 

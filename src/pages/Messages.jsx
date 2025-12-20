@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
 
 export default function MessagesPage() {
     const { user } = useAuth();
-    const navigate = useNavigate();
     const messagesEndRef = useRef(null);
     const [searchParams] = useSearchParams();
 
@@ -341,7 +340,7 @@ export default function MessagesPage() {
     return (
         <div className="flex h-[calc(100vh-64px)] bg-gray-50">
             {/* --- Left Sidebar (Contact List) --- */}
-            <div className="w-full md:w-80 lg:w-96 bg-white border-r border-gray-200 flex flex-col">
+            <div className="hidden md:flex md:w-80 lg:w-96 bg-white border-r border-gray-200 flex-col">
                 <div className="p-4 border-b border-gray-100 bg-gray-50">
                     <h2 className="text-xl font-bold text-gray-800">Messages</h2>
                 </div>
@@ -384,7 +383,44 @@ export default function MessagesPage() {
             </div>
 
             {/* --- Right Chat Area --- */}
-            <div className={`flex-1 flex flex-col bg-white ${!selectedConversation ? 'hidden md:flex' : ''}`}>
+            <div className="flex-1 flex flex-col bg-white">
+                {!selectedConversation && (
+                    <div className="md:hidden flex-1 overflow-y-auto p-4 bg-white">
+                        {conversations.length === 0 ? (
+                            <div className="p-4 text-center text-gray-400 text-sm">No conversations yet</div>
+                        ) : (
+                            <div className="grid grid-cols-1 gap-3">
+                                {conversations.map(conv => (
+                                    <div 
+                                        key={conv.id}
+                                        onClick={() => selectConversation(conv)}
+                                        className="p-4 border border-gray-200 rounded-xl bg-white shadow-sm active:scale-[0.99] transition"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-700 font-bold shrink-0">
+                                                {conv.avatar}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex justify-between items-baseline">
+                                                    <h3 className="font-semibold text-gray-900 truncate">{conv.name}</h3>
+                                                    <span className="text-xs text-gray-400">{conv.lastMessageTime}</span>
+                                                </div>
+                                                {conv.productName && (
+                                                    <div className="text-xs text-blue-600 truncate mb-0.5">
+                                                        re: {conv.productName}
+                                                    </div>
+                                                )}
+                                                <p className="text-sm text-gray-500 truncate">
+                                                    {conv.lastMessage || 'No messages yet'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
                 {selectedConversation ? (
                     <>
                         {/* Header */}
@@ -461,7 +497,7 @@ export default function MessagesPage() {
                         </div>
                     </>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
+                    <div className="hidden md:flex flex-1 flex-col items-center justify-center text-gray-400">
                         <svg className="w-16 h-16 mb-4 opacity-20" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
                         </svg>
