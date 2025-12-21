@@ -32,7 +32,7 @@ export default function AddListingPage() {
                 .single();
 
             if (error) {
-                console.error('Error fetching profile:', error);
+                // console.error('Error fetching profile:', error);
                 return;
             }
 
@@ -140,7 +140,7 @@ export default function AddListingPage() {
             alert('Product created successfully!');
             navigate(`/products/${newListing.id}`);
         } catch (err) {
-            console.error('Error creating product:', err);
+            // console.error('Error creating product:', err);
             setError(err.message || 'Failed to create product.');
         } finally {
             setUploading(false);

@@ -15,7 +15,7 @@ export default function ForgotPassword() {
         setError(null);
         setMessage(null);
 
-        console.log('Attempting to reset password for:', email);
+
 
         try {
             // Check if function exists
@@ -27,13 +27,13 @@ export default function ForgotPassword() {
                 redirectTo: `${window.location.origin}/auth/reset-password`,
             });
 
-            console.log('Supabase response:', { data, error });
+
 
             if (error) throw error;
 
             setMessage('Check your email for the password reset link.');
         } catch (err) {
-            console.error('Reset password error:', err);
+            // console.error('Reset password error:', err);
             setError(err.message);
         } finally {
             setLoading(false);

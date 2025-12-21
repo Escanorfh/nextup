@@ -60,7 +60,7 @@ export default function ListingDetailsPage() {
                     profiles: seller,
                 });
             } catch (err) {
-                console.error('Error:', err);
+                // console.error('Error:', err);
                 setError(err.message || 'Failed to load listing.');
             } finally {
                 setLoading(false);
@@ -129,7 +129,7 @@ export default function ListingDetailsPage() {
             navigate(`/messages?conversation=${convId}&to=${listing.user_id}&listing=${listing.id}`);
 
         } catch (err) {
-            console.error('Chat error:', err);
+            // console.error('Chat error:', err);
             alert(`Chat Error: ${err.message}. Details: ${err.details || ''} Hint: ${err.hint || ''}`);
         }
     };

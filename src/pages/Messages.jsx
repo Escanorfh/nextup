@@ -12,7 +12,7 @@ export default function MessagesPage() {
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(true);
-    
+
     // URL Params
     const paramTo = searchParams.get('to');
     const paramListing = searchParams.get('listing');
@@ -56,7 +56,7 @@ export default function MessagesPage() {
                     const u2 = conv.user2_profile || { id: conv.user2, full_name: 'Unknown User' };
 
                     const otherUser = conv.user1 === user.id ? u2 : u1;
-                    
+
                     return {
                         id: conv.id,
                         otherUserId: otherUser.id,
@@ -99,7 +99,7 @@ export default function MessagesPage() {
 
                 setConversations(formatted);
             } catch (err) {
-                console.error("Load conversations error:", err);
+                // console.error("Load conversations error:", err);
             } finally {
                 setLoading(false);
             }
@@ -131,7 +131,7 @@ export default function MessagesPage() {
                 // If not, we just find any conversation with that user? 
                 // Requirement says: "display all conversations... regardless of product" for header click.
                 // But for Product Details click, we want specific context.
-                
+
                 let existing;
                 if (paramListing) {
                     existing = conversations.find(c => c.otherUserId === paramTo && c.productId === paramListing);
@@ -148,7 +148,7 @@ export default function MessagesPage() {
                         .select('full_name')
                         .eq('id', paramTo)
                         .single();
-                    
+
                     const tempConv = {
                         id: 'NEW',
                         otherUserId: paramTo,
@@ -176,7 +176,7 @@ export default function MessagesPage() {
             .channel('public:messages')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
                 const newMsg = payload.new;
-                
+
                 // Update selected conversation if match
                 setSelectedConversation(prev => {
                     if (prev && prev.id === newMsg.conversation_id) {
@@ -259,9 +259,9 @@ export default function MessagesPage() {
                     .single();
 
                 if (createError) throw createError;
-                
+
                 finalConvId = newConv.id;
-                
+
                 // Add to sidebar
                 const newConvFormatted = {
                     id: finalConvId,
@@ -294,7 +294,7 @@ export default function MessagesPage() {
             // Better to update manually to be instant, duplicate check might be needed if realtime is fast.
             // For now, let's update manually and let realtime double check or just ignore if ID exists.
             // Actually, realtime is better for *incoming*, manual for *outgoing* to feel responsive.
-            
+
             const newMsgObj = { ...msgData };
 
             setSelectedConversation(prev => {
@@ -308,7 +308,7 @@ export default function MessagesPage() {
                 }
                 // Check if message already added by realtime (race condition)
                 if (prev.messages?.some(m => m.id === newMsgObj.id)) return prev;
-                
+
                 return {
                     ...prev,
                     messages: [...(prev.messages || []), newMsgObj]
@@ -317,15 +317,15 @@ export default function MessagesPage() {
 
             // Update sidebar if not NEW (NEW handled above)
             if (selectedConversation.id !== 'NEW') {
-                setConversations(prev => prev.map(c => 
-                    c.id === finalConvId 
+                setConversations(prev => prev.map(c =>
+                    c.id === finalConvId
                         ? { ...c, lastMessage: content, lastMessageTime: 'Just now' }
                         : c
                 ));
             }
 
         } catch (err) {
-            console.error("Send message error:", err);
+            // console.error("Send message error:", err);
             alert("Failed to send message");
         }
     };
@@ -344,18 +344,17 @@ export default function MessagesPage() {
                 <div className="p-4 border-b border-gray-100 bg-gray-50">
                     <h2 className="text-xl font-bold text-gray-800">Messages</h2>
                 </div>
-                
+
                 <div className="flex-1 overflow-y-auto">
                     {conversations.length === 0 ? (
                         <div className="p-4 text-center text-gray-400 text-sm">No conversations yet</div>
                     ) : (
                         conversations.map(conv => (
-                            <div 
+                            <div
                                 key={conv.id}
                                 onClick={() => selectConversation(conv)}
-                                className={`p-4 border-b border-gray-50 cursor-pointer hover:bg-gray-50 transition ${
-                                    selectedConversation?.id === conv.id ? 'bg-neutral-50 border-l-4 border-l-neutral-900' : ''
-                                }`}
+                                className={`p-4 border-b border-gray-50 cursor-pointer hover:bg-gray-50 transition ${selectedConversation?.id === conv.id ? 'bg-neutral-50 border-l-4 border-l-neutral-900' : ''
+                                    }`}
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-700 font-bold shrink-0">
@@ -391,7 +390,7 @@ export default function MessagesPage() {
                         ) : (
                             <div className="grid grid-cols-1 gap-3">
                                 {conversations.map(conv => (
-                                    <div 
+                                    <div
                                         key={conv.id}
                                         onClick={() => selectConversation(conv)}
                                         className="p-4 border border-gray-200 rounded-xl bg-white shadow-sm active:scale-[0.99] transition"
@@ -427,13 +426,13 @@ export default function MessagesPage() {
                         <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-white shadow-sm z-10">
                             <div className="flex items-center gap-3">
                                 {/* Back button for mobile */}
-                                <button 
+                                <button
                                     className="md:hidden text-gray-500"
                                     onClick={() => setSelectedConversation(null)}
                                 >
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                                 </button>
-                                
+
                                 <div className="w-10 h-10 rounded-full bg-neutral-900 text-white flex items-center justify-center font-bold">
                                     {selectedConversation.avatar}
                                 </div>
@@ -453,16 +452,15 @@ export default function MessagesPage() {
                                     Start the conversation with {selectedConversation.name}
                                 </div>
                             )}
-                            
+
                             {selectedConversation.messages?.map((msg, idx) => {
                                 const isMe = msg.sender_id === user.id;
                                 return (
                                     <div key={idx} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`max-w-[70%] rounded-2xl px-4 py-2 shadow-sm ${
-                                            isMe 
-                                                ? 'bg-neutral-900 text-white rounded-br-none' 
+                                        <div className={`max-w-[70%] rounded-2xl px-4 py-2 shadow-sm ${isMe
+                                                ? 'bg-neutral-900 text-white rounded-br-none'
                                                 : 'bg-white text-gray-800 border border-gray-100 rounded-bl-none'
-                                        }`}>
+                                            }`}>
                                             <p className="text-sm">{msg.content}</p>
                                             <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-gray-400' : 'text-gray-400'}`}>
                                                 {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

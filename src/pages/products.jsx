@@ -76,7 +76,7 @@ export default function ListingsPage() {
                         .in('id', userIds);
 
                     if (profileError) {
-                        console.error('Error fetching profiles:', profileError);
+                        // console.error('Error fetching profiles:', profileError);
                         // ❌ لا توقف التطبيق — استمر بدون أسماء
                     } else if (profiles && profiles.length > 0) {
                         // ✅ فقط الآن استخدم forEach
@@ -101,7 +101,7 @@ export default function ListingsPage() {
 
                 setHasMore(data.length === 12);
             } catch (err) {
-                console.error('Error fetching listings:', err);
+                // console.error('Error fetching listings:', err);
                 setError(err.message || 'Failed to load listings.');
             } finally {
                 setLoading(false);
@@ -152,7 +152,7 @@ export default function ListingsPage() {
                 setFavorites(prev => new Set(prev).add(listingId));
             }
         } catch (err) {
-            console.error('Toggle favorite error:', err);
+            // console.error('Toggle favorite error:', err);
             alert('Failed to update favorites.');
         }
     };

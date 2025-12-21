@@ -32,7 +32,7 @@ export default function MyProductsPage() {
 
                 setListings(listingsData || []);
             } catch (err) {
-                console.error('Error fetching listings:', err);
+                // console.error('Error fetching listings:', err);
                 setError(err.message || 'Failed to load your listings');
             } finally {
                 setLoading(false);
@@ -58,7 +58,7 @@ export default function MyProductsPage() {
 
             setListings(listings.filter((l) => l.id !== listingId));
         } catch (err) {
-            console.error('Error deleting listing:', err);
+            // console.error('Error deleting listing:', err);
             alert('Failed to delete listing. Please try again.');
         }
     };

@@ -25,7 +25,7 @@ export default function ProfilePage() {
                 if (error) throw error;
                 setproductsCount(count || 0);
             } catch (err) {
-                console.error('Error fetching products count:', err.message);
+                // console.error('Error fetching products count:', err.message);
             } finally {
                 setLoading(false);
             }
@@ -39,7 +39,7 @@ export default function ProfilePage() {
             await logout();
             navigate('/login', { replace: true });
         } catch (err) {
-            console.error('Logout error:', err.message);
+            // console.error('Logout error:', err.message);
         }
     };
 

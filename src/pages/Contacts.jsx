@@ -66,7 +66,7 @@ export default function ContactsPage() {
 
                 setItems(formatted);
             } catch (err) {
-                console.error('Load contacts error:', err);
+                // console.error('Load contacts error:', err);
             } finally {
                 setLoading(false);
             }

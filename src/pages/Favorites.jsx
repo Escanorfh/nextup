@@ -47,7 +47,7 @@ export default function FavoritesPage() {
 
                 setFavorites(favList);
             } catch (err) {
-                console.error('Error fetching favorites:', err);
+                // console.error('Error fetching favorites:', err);
                 setError(err.message || 'Failed to load favorites.');
             } finally {
                 setLoading(false);
@@ -70,7 +70,7 @@ export default function FavoritesPage() {
             // ✅ تحديث محلي فوري
             setFavorites((prev) => prev.filter((fav) => fav.id !== listingId));
         } catch (err) {
-            console.error('Remove favorite error:', err);
+            // console.error('Remove favorite error:', err);
             alert('Failed to remove from favorites.');
         }
     };

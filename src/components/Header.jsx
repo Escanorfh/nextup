@@ -58,7 +58,7 @@ export default function Header({
             await logout();
             navigate('/auth/login', { replace: true });
         } catch (err) {
-            console.error('Logout error:', err.message);
+            // console.error('Logout error:', err.message);
         }
     };
 
@@ -111,7 +111,7 @@ export default function Header({
                 }));
                 setNotifItems(formatted);
             } catch (err) {
-                console.error('Load notifications error:', err);
+                // console.error('Load notifications error:', err);
             } finally {
                 setNotifLoading(false);
             }
