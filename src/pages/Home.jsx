@@ -1,7 +1,7 @@
 // src/pages/HomePage.jsx
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-
+import { Smartphone, Car, Armchair, Shirt, Volleyball, Library } from 'lucide-react';
 export default function Home() {
   const { user } = useAuth();
   return (
@@ -15,7 +15,7 @@ export default function Home() {
             <span className="text-neutral-500">Across Egypt — Safely & Locally</span>
           </h1>
           <p className="mt-6 text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed">
-            Next Up is Egypt’s trusted local marketplace for buying and selling secondhand items — from electronics and furniture to bikes and fashion — quickly, securely, and completely free.
+            Next Up is Egypt’s trusted local marketplace for buying and selling secondhand items from electronics and furniture to bikes and fashion quickly, securely, and completely free.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
             {!user && (
@@ -66,7 +66,7 @@ export default function Home() {
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold text-neutral-900 tracking-tight">How Next Up Works in Egypt</h2>
             <p className="mt-4 text-neutral-600">
-              Three simple steps to buy or sell secondhand items across Cairo, Alexandria, Giza, and beyond — with no fees and no middlemen.
+              Three simple steps to buy or sell secondhand items across Cairo, Alexandria, Giza, and beyond with no fees and no middlemen.
             </p>
           </div>
 
@@ -77,7 +77,7 @@ export default function Home() {
               </div>
               <h3 className="mt-6 text-xl font-semibold text-neutral-900">Create Your Account</h3>
               <p className="mt-3 text-neutral-500 leading-relaxed">
-                Sign up in seconds — no phone verification required. Start your journey on Egypt’s favorite free classifieds platform.
+                Sign up in seconds no phone verification required. Start your journey on Egypt’s favorite free classifieds platform.
               </p>
             </div>
 
@@ -87,7 +87,7 @@ export default function Home() {
               </div>
               <h3 className="mt-6 text-xl font-semibold text-neutral-900">List or Discover Items</h3>
               <p className="mt-3 text-neutral-500 leading-relaxed">
-                Post your used gear in under a minute, or browse thousands of local listings near you — from Cairo to Sharm El Sheikh.
+                Post your used gear in under a minute, or browse thousands of local listings near you from Cairo to Sharm El Sheikh.
               </p>
             </div>
 
@@ -110,25 +110,25 @@ export default function Home() {
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold text-neutral-900 tracking-tight">Popular Categories in Egypt</h2>
             <p className="mt-4 text-neutral-600">
-              See what Egyptians are buying and selling — from Cairo apartments to Red Sea diving gear.
+              See what Egyptians are buying and selling from Cairo apartments to Red Sea diving gear.
             </p>
           </div>
 
           <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6">
             {[
-              { name: 'Electronics', icon: '📱' },
-              { name: 'Vehicles', icon: '🚗' },
-              { name: 'Furniture', icon: '🪑' },
-              { name: 'Clothing', icon: '👕' },
-              { name: 'Sports', icon: '⚽' },
-              { name: 'Books', icon: '📚' },
+              { name: 'Electronics', icon: <Smartphone /> },
+              { name: 'Vehicles', icon: <Car /> },
+              { name: 'Furniture', icon: <Armchair /> },
+              { name: 'Clothing', icon: <Shirt /> },
+              { name: 'Sports', icon: <Volleyball /> },
+              { name: 'Books', icon: <Library /> },
             ].map((cat, i) => (
               <Link
                 key={i}
                 to={`/products?category=${cat.name}`}
                 className="bg-white p-6 rounded-xl border border-neutral-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 text-center group"
               >
-                <div className="text-3xl mb-3 group-hover:scale-110 transition duration-300">{cat.icon}</div>
+                <div className="flex justify-center text-3xl mb-3 group-hover:scale-110 transition duration-300">{cat.icon}</div>
                 <div className="font-medium text-neutral-900">{cat.name}</div>
               </Link>
             ))}
