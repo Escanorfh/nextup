@@ -41,9 +41,17 @@ export default function SignIn() {
     };
 
     const handleGoogleSignIn = async () => {
+
         try {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
+                options: {
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'consent',
+                    },
+                    redirectTo: window.location.origin,
+                },
             });
             if (error) throw error;
         } catch (err) {
@@ -52,7 +60,7 @@ export default function SignIn() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center py-12 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-neutral-100">
                 <div className="text-center">
                     <h2 className="mt-2 text-3xl font-bold text-neutral-900 tracking-tight">
@@ -120,21 +128,14 @@ export default function SignIn() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         className="mt-1 block w-full px-4 py-3 rounded-lg bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition duration-200"
-                                        placeholder="you@example.com"
+                                        placeholder="Email@gmail.com"
                                     />
                                 </div>
 
                                 <div>
-                                    <div className="flex items-center justify-between">
-                                        <label htmlFor="password" className="block text-sm font-medium text-neutral-700">
-                                            Password
-                                        </label>
-                                        <div className="text-sm">
-                                            <a href="#" className="font-medium text-neutral-900 hover:text-neutral-700">
-                                                Forgot your password?
-                                            </a>
-                                        </div>
-                                    </div>
+                                    <label htmlFor="password" className="block text-sm font-medium text-neutral-700">
+                                        Password
+                                    </label>
                                     <input
                                         id="password"
                                         name="password"
@@ -144,7 +145,7 @@ export default function SignIn() {
                                         value={formData.password}
                                         onChange={handleChange}
                                         className="mt-1 block w-full px-4 py-3 rounded-lg bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition duration-200"
-                                        placeholder="••••••••"
+                                        placeholder="Password"
                                     />
                                 </div>
                             </div>
@@ -157,6 +158,14 @@ export default function SignIn() {
                                 >
                                     {loading ? 'Signing in...' : 'Sign in'}
                                 </button>
+                            </div>
+                            <div className="flex items-center justify-between">
+
+                                <div className="text-sm">
+                                    <Link to="/auth/forgot-password" className="font-medium text-neutral-900 hover:text-neutral-700">
+                                        Forgot your password?
+                                    </Link>
+                                </div>
                             </div>
                         </form>
                     </div>

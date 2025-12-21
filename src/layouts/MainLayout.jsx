@@ -1,6 +1,7 @@
 // src/layouts/MainLayout.jsx
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
+import SEO from '../components/SEO';
 
 export default function MainLayout() {
     const location = useLocation();
@@ -13,6 +14,7 @@ export default function MainLayout() {
 
     return (
         <>
+            <SEO /> {/* Default SEO */}
             <Header showFilters={showFilters} />
             <main className="pt-2">
                 <Outlet />

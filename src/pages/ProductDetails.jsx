@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
+import { Phone } from 'lucide-react';
 
 export default function ListingDetailsPage() {
     const { id } = useParams();
@@ -11,7 +13,9 @@ export default function ListingDetailsPage() {
     const [listing, setListing] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [showPhone, setShowPhone] = useState(false);
 
     useEffect(() => {
         const fetchListing = async () => {
@@ -80,24 +84,7 @@ export default function ListingDetailsPage() {
         }
     };
 
-    const handleContact = () => {
-        if (!listing?.profiles?.phone) {
-            alert('Phone not available.');
-            return;
-        }
 
-        let phone = listing.profiles.phone.trim();
-        if (phone.startsWith('0')) {
-            phone = '+2' + phone.substring(1);
-        } else if (phone.startsWith('2') && !phone.startsWith('+')) {
-            phone = '+' + phone;
-        } else if (!phone.startsWith('+')) {
-            phone = '+2' + phone;
-        }
-
-        const message = encodeURIComponent(`Hello, I'm interested in your product: "${listing.name}"`);
-        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
-    };
 
     const handleChat = async () => {
         if (!listing?.user_id || !user?.id || listing.user_id === user.id) {
@@ -189,6 +176,11 @@ export default function ListingDetailsPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <SEO
+                title={listing.name}
+                description={listing.description ? listing.description.substring(0, 160) : `Check out ${listing.name} on Next Up.`}
+                image={listing.images?.[0] || listing.imageUrl}
+            />
             <main className="container mx-auto px-4 py-6">
                 <nav className="text-sm text-gray-500 mb-6">
                     <button onClick={() => navigate('/')} className="hover:text-neutral-600">
@@ -303,13 +295,11 @@ export default function ListingDetailsPage() {
                             {/* Action Sidebar */}
                             <div className="mt-6 md:mt-0 md:ml-8 w-full md:w-64 space-y-3">
                                 <button
-                                    onClick={handleContact}
-                                    className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg shadow flex items-center justify-center"
+                                    onClick={() => setShowPhone(!showPhone)}
+                                    className={`w-full font-semibold py-3 px-4 rounded-lg shadow flex items-center justify-center transition-colors ${showPhone ? 'bg-white text-neutral-900 border-2 border-neutral-900' : 'bg-neutral-900 text-white hover:bg-neutral-800'}`}
                                 >
-                                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.482 0 1.467 1.065 2.886 1.213 3.084.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347Z" />
-                                    </svg>
-                                    WhatsApp
+                                    <Phone className={`w-5 h-5 mr-2 ${showPhone ? 'text-neutral-900' : 'text-white'}`} />
+                                    {showPhone ? (listing.profiles?.phone || 'No phone number') : 'Show Phone Number'}
                                 </button>
 
                                 {/* زر Chat يظهر فقط لو المستخدم مش البائع */}

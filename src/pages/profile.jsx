@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
+import { Lock, LogOut } from 'lucide-react';
 
 export default function ProfilePage() {
     const { user, logout } = useAuth();
@@ -142,13 +143,13 @@ export default function ProfilePage() {
                                     onClick={() => navigate('/change-password')}
                                     className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-neutral-900"
                                 >
-                                    🔐 Change Password
+                                    <Lock className="w-4 h-4 mr-2" /> Change Password
                                 </button>
                                 <button
                                     onClick={handleLogout}
-                                    className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800"
+                                    className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 flex items-center"
                                 >
-                                    📤 Log Out
+                                    <LogOut className="w-4 h-4 mr-2" /> Log Out
                                 </button>
                             </div>
                         </div>

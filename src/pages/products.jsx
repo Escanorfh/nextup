@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
+import { Search } from 'lucide-react';
 
 export default function ListingsPage() {
     const { user } = useAuth();
@@ -171,6 +173,10 @@ export default function ListingsPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <SEO
+                title="Browse Products"
+                description="Explore a wide range of products including electronics, fashion, and furniture on Next Up."
+            />
             {/* Header مع فلاتر */}
             <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
                 <div className="container mx-auto px-4 py-4">
@@ -234,7 +240,7 @@ export default function ListingsPage() {
                     </div>
                 ) : listings.length === 0 ? (
                     <div className="text-center py-12">
-                        <div className="text-6xl mb-4">🔍</div>
+                        <Search className="w-16 h-16 mx-auto mb-4 text-gray-400" />
                         <h3 className="text-xl font-semibold text-gray-900">No products found</h3>
                         <p className="mt-2 text-gray-600">
                             Try changing your search or filter settings.

@@ -62,7 +62,7 @@ export default function SignUp() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center py-12 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-neutral-100">
                 <div className="text-center">
                     <h2 className="mt-2 text-3xl font-bold text-neutral-900 tracking-tight">
@@ -110,7 +110,7 @@ export default function SignUp() {
                                     value={formData.name}
                                     onChange={handleChange}
                                     className="mt-1 block w-full px-4 py-3 rounded-lg bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition duration-200"
-                                    placeholder="John Doe"
+                                    placeholder="Username"
                                 />
                             </div>
                             <div>
@@ -126,7 +126,7 @@ export default function SignUp() {
                                     value={formData.email}
                                     onChange={handleChange}
                                     className="mt-1 block w-full px-4 py-3 rounded-lg bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition duration-200"
-                                    placeholder="you@example.com"
+                                    placeholder="Email@Email.com"
                                 />
                             </div>
                             <div>
@@ -142,7 +142,7 @@ export default function SignUp() {
                                     value={formData.password}
                                     onChange={handleChange}
                                     className="mt-1 block w-full px-4 py-3 rounded-lg bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition duration-200"
-                                    placeholder="••••••••"
+                                    placeholder="Password"
                                 />
                             </div>
                             <div>
@@ -158,7 +158,7 @@ export default function SignUp() {
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
                                     className="mt-1 block w-full px-4 py-3 rounded-lg bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition duration-200"
-                                    placeholder="••••••••"
+                                    placeholder="Confirm Password"
                                 />
                             </div>
                         </div>

@@ -12,6 +12,9 @@ import ListingDetailsPage from './pages/ProductDetails'; // Was ListingDetailsPa
 import AddListingPage from './pages/addProducts'; // Was AddListingPage
 import LoginPage from './auth/signIn'; // Was pages/auth/LoginPage
 import SignupPage from './auth/signUp'; // Was pages/auth/SignupPage
+import ForgotPassword from './auth/ForgotPassword';
+import ResetPassword from './auth/ResetPassword';
+import ChangePassword from './auth/ChangePassword';
 import ProfilePage from './pages/profile';
 import MyListingsPage from './pages/MyProducts'; // Was MyListingsPage
 import MessagesPage from './pages/Messages';
@@ -41,6 +44,8 @@ function App() {
           <Route path="login" element={<LoginPage />} />
           <Route path="signin" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="reset-password" element={<ResetPassword />} />
         </Route>
 
         {/* Protected Routes */}
@@ -48,7 +53,9 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="add-listing" element={<AddListingPage />} />
             <Route path="addProducts" element={<AddListingPage />} />
+            <Route path="addProducts" element={<AddListingPage />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="change-password" element={<ChangePassword />} />
             <Route path="my-listings" element={<MyListingsPage />} />
             <Route path="my-products" element={<MyListingsPage />} />
             <Route path="messages" element={<MessagesPage />} />
