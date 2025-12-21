@@ -2,8 +2,12 @@
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { useAuth } from '../hooks/useAuth';
+<<<<<<< HEAD
 import { Smartphone, Car, Armchair, Shirt, Trophy, Book, Star } from 'lucide-react';
 
+=======
+import { Smartphone, Car, Armchair, Shirt, Volleyball, Library } from 'lucide-react';
+>>>>>>> 89802b4239f29723c520e1b060fd7fa11471c769
 export default function Home() {
   const { user } = useAuth();
   return (
@@ -15,6 +19,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="py-16 md:py-24 bg-white">
         <div className="container mx-auto px-4 text-center">
+<<<<<<< HEAD
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
               Buy & Sell <br />
@@ -26,6 +31,15 @@ export default function Home() {
               Join thousands of users on Next Up. list your items for free or find great deals near you.
             </p>
           </div>
+=======
+          <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 max-w-3xl mx-auto tracking-tight">
+            Buy & Sell Gently Used Gear <br />
+            <span className="text-neutral-500">Across Egypt — Safely & Locally</span>
+          </h1>
+          <p className="mt-6 text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+            Next Up is Egypt’s trusted local marketplace for buying and selling secondhand items from electronics and furniture to bikes and fashion quickly, securely, and completely free.
+          </p>
+>>>>>>> 89802b4239f29723c520e1b060fd7fa11471c769
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
             {!user && (
               <Link
@@ -77,7 +91,7 @@ export default function Home() {
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold text-neutral-900 tracking-tight">How Next Up Works</h2>
             <p className="mt-4 text-neutral-600">
-              Three simple steps to buy or sell secondhand items across Cairo, Alexandria, Giza, and beyond — with no fees and no middlemen.
+              Three simple steps to buy or sell secondhand items across Cairo, Alexandria, Giza, and beyond with no fees and no middlemen.
             </p>
           </div>
 
@@ -88,7 +102,7 @@ export default function Home() {
               </div>
               <h3 className="mt-6 text-xl font-semibold text-neutral-900">Create Your Account</h3>
               <p className="mt-3 text-neutral-500 leading-relaxed">
-                Sign up in seconds — no phone verification required. Start your journey on Egypt’s favorite free classifieds platform.
+                Sign up in seconds no phone verification required. Start your journey on Egypt’s favorite free classifieds platform.
               </p>
             </div>
 
@@ -98,7 +112,7 @@ export default function Home() {
               </div>
               <h3 className="mt-6 text-xl font-semibold text-neutral-900">List or Discover Items</h3>
               <p className="mt-3 text-neutral-500 leading-relaxed">
-                Post your used gear in under a minute, or browse thousands of local listings near you — from Cairo to Sharm El Sheikh.
+                Post your used gear in under a minute, or browse thousands of local listings near you from Cairo to Sharm El Sheikh.
               </p>
             </div>
 
@@ -121,25 +135,34 @@ export default function Home() {
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold text-neutral-900 tracking-tight">Popular Categories in Egypt</h2>
             <p className="mt-4 text-neutral-600">
-              See what Egyptians are buying and selling — from Cairo apartments to Red Sea diving gear.
+              See what Egyptians are buying and selling from Cairo apartments to Red Sea diving gear.
             </p>
           </div>
 
           <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 flex items-center justify-center">
             {[
+<<<<<<< HEAD
               { name: 'Electronics', icon: <Smartphone className="w-8 h-8" /> },
               { name: 'Vehicles', icon: <Car className="w-8 h-8" /> },
               { name: 'Furniture', icon: <Armchair className="w-8 h-8" /> },
               { name: 'Clothing', icon: <Shirt className="w-8 h-8" /> },
               { name: 'Sports', icon: <Trophy className="w-8 h-8" /> },
               { name: 'Books', icon: <Book className="w-8 h-8" /> },
+=======
+              { name: 'Electronics', icon: <Smartphone /> },
+              { name: 'Vehicles', icon: <Car /> },
+              { name: 'Furniture', icon: <Armchair /> },
+              { name: 'Clothing', icon: <Shirt /> },
+              { name: 'Sports', icon: <Volleyball /> },
+              { name: 'Books', icon: <Library /> },
+>>>>>>> 89802b4239f29723c520e1b060fd7fa11471c769
             ].map((cat, i) => (
               <Link
                 key={i}
                 to={`/products?category=${cat.name}`}
                 className="bg-white p-6 rounded-xl border border-neutral-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 text-center group"
               >
-                <div className="text-3xl mb-3 group-hover:scale-110 transition duration-300">{cat.icon}</div>
+                <div className="flex justify-center text-3xl mb-3 group-hover:scale-110 transition duration-300">{cat.icon}</div>
                 <div className="font-medium text-neutral-900">{cat.name}</div>
               </Link>
             ))}
